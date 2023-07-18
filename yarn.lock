@@ -2335,8 +2335,8 @@ __metadata:
   linkType: hard
 
 "israeli-bank-scrapers-core@npm:latest":
-  version: 3.9.0
-  resolution: "israeli-bank-scrapers-core@npm:3.9.0"
+  version: 3.10.3
+  resolution: "israeli-bank-scrapers-core@npm:3.10.3"
   dependencies:
     build-url: ^2.0.0
     core-js: ^3.1.4
@@ -2349,7 +2349,7 @@ __metadata:
     node-fetch: ^2.2.0
     puppeteer-core: ^6.0.0
     uuid: ^3.3.2
-  checksum: 5c3182c12b163590a8547a7531b0c6295f7382fe904ed0af58091ec4bc4b4ee23fd54d3c8671e4fba5ce0053eaa3d22fafc44220fb3362e9201d6672afebf859
+  checksum: bbe703fee06e035d93e0cbea740a44e83853f22467cba10b348e236be63db623454789c1305e1986a6af3d42109fed78a25c774a1c1204079fb4a5beacebdb63
   languageName: node
   linkType: hard
 
