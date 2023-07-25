@@ -1,7 +1,9 @@
 {
-    "main": "src/functions/scrape/index.js",
+    "main": "dist/src/commands/startLambdaHandler.js",
     "dependencies": {
         "@google-cloud/firestore": "^2.2.1",
+        "@google-cloud/functions-framework": "^3.3.0",
+        "@google/events": "^5.4.0",
         "@types/lodash": "^4.14.123",
         "@types/minimist": "^1.2.0",
         "@types/moment-timezone": "^0.5.30",
@@ -37,6 +39,7 @@
         "tslint-config-prettier": "^1.18.0"
     },
     "scripts": {
+        "start": "functions-framework --target=schedulerHandler",
         "build": "./node_modules/.bin/tsc",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "runCommand": "node --enable-source-maps dist/src/runCommand.js",
