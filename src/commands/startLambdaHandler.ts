@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import env from '../env';
 import TelegramBot from '../notifications/TelegramBot';
 import { SchedulerJobData } from '@google/events/cloud/scheduler/v1/SchedulerJobData';
-import ff, { CloudEvent } from '@google-cloud/functions-framework';
+import { CloudEvent, cloudEvent } from '@google-cloud/functions-framework';
 
 const eventHandler = async (
     event: APIGatewayEvent | CloudEvent<SchedulerJobData>
@@ -38,5 +38,5 @@ const eventHandler = async (
     }
 };
 
-ff.cloudEvent<SchedulerJobData>('schedulerHandler', eventHandler);
+cloudEvent<SchedulerJobData>('schedulerHandler', eventHandler);
 export const lambdaHandler = eventHandler;
