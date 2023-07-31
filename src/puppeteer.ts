@@ -1,6 +1,7 @@
-import puppeteer, { Browser } from 'puppeteer-core';
+import puppeteer, { Browser } from 'puppeteer';
 import env from './env';
 import * as proxyChain from 'proxy-chain';
+import * as path from 'path';
 
 const getProxy = async () => {
     let proxyUrl = env.HTTP_PROXY_URL;
@@ -56,7 +57,6 @@ const lambdaOptions = {
 };
 
 export async function launchPuppeteer(): Promise<Browser> {
-
     const proxyUrl = await proxyUrlPromise;
 
     let options = {
@@ -66,7 +66,6 @@ export async function launchPuppeteer(): Promise<Browser> {
         channel: env.PUPPETEER_EXECUTABLE_PATH ? undefined : env.PUPPETEER_CHANNEL
     };
 
-
     if (process.env.AWS_LAMBDA_RUNTIME_API) {
         options = {
             ...options,
@@ -74,10 +73,16 @@ export async function launchPuppeteer(): Promise<Browser> {
         };
     }
 
+    if (process.env.GCF_RUNTIME) {
+        console.log('GCF Runtime detected. Appending main directory to chrome executable path.');
+        const executablePath = path.join(process.cwd(), env.PUPPETEER_EXECUTABLE_PATH || '');
+        console.log(`executable path set as ${executablePath}`);
+        options.executablePath = executablePath;
+    }
+
     if (proxyUrl) {
         options.args.push(`--proxy-server=${proxyUrl}`);
     }
-
 
     return puppeteer.launch(options);
 }
