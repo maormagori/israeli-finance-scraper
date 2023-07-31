@@ -22,23 +22,26 @@ steps:
         - -c
         - |
             CHROMIUM_PATH=$$(npx --yes @puppeteer/browsers install chromium --path /workspace | cut -d' ' -f2)
+            CHROMIUM_PATH=$${CHROMIUM_PATH#"/workspace"}
             echo "PUPPETEER_EXECUTABLE_PATH: $${CHROMIUM_PATH}" >> /workspace/env.yaml
+            echo "GCF_RUNTIME: 'true'" >> /workspace/env.yaml
     # Deploying the function itself:
     # Region is to your liking but make sure your bucket is in the same one
-    # trigger-topic must be a predefined topic that your publish messages from a cloud scheduler job
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    # trigger-resource must be a predefined topic that you publish messages from a cloud scheduler job to
+    - name: 'gcr.io/cloud-builders/gcloud'
       args:
-        - gcloud
         - functions
         - deploy
         - finance-scraper
+        - --gen2
         - --region=europe-west1
         - --source=.
-        - --trigger-topic=scrape-finance
+        - --trigger-event=google.cloud.pubsub.topic.v1.messagePublished
+        - --trigger-resource=scrape-finance
         - --runtime=nodejs16
         - --entry-point=schedulerHandler
         - --allow-unauthenticated
-        - --memory=1024M
+        - --memory=2048M
         - --env-vars-file=/workspace/env.yaml
 availableSecrets:
     secretManager:
