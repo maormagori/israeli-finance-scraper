@@ -14,7 +14,8 @@
 .gitignore
 .idea
 
-#!include:.gitignore
+node_modules
+!include:.gitignore
 !dist/
 .yarn/*
 !.yarn/patches
