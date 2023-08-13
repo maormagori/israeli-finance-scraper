@@ -1,4 +1,4 @@
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer-core';
 import env from './env';
 import * as proxyChain from 'proxy-chain';
 import * as path from 'path';
