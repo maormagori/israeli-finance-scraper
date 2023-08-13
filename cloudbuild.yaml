@@ -28,6 +28,7 @@ steps:
     # Deploying the function itself:
     # Region is to your liking but make sure your bucket is in the same one
     # trigger-resource must be a predefined topic that you publish messages from a cloud scheduler job to
+    # The function seems to fail if given not enough memory so 2048M is on the safe side
     - name: 'gcr.io/cloud-builders/gcloud'
       args:
         - functions
