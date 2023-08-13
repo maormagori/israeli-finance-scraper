@@ -14,8 +14,6 @@
 .gitignore
 .idea
 
-node_modules
-!include:.gitignore
 !dist/
 .yarn/*
 !.yarn/patches
@@ -23,3 +21,5 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+!chrome
+!chromium
