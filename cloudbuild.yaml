@@ -8,12 +8,6 @@ steps:
             echo "BOT_TOKEN: '$$BOT_TOKEN'" >> /workspace/env.yaml
             echo "CHAT_ID: '$$CHAT_ID'" >> /workspace/env.yaml
       secretEnv: ['GOOGLE_CREDENTIALS', 'BOT_TOKEN', 'CHAT_ID']
-    - name: 'node'
-      entrypoint: 'yarn'
-      args: ['install']
-    - name: 'node'
-      entrypoint: 'yarn'
-      args: ['build']
     # Installing chromium. This assumes cloud-functions and the node container are the same.
     # Should be more specific in the future.
     - name: 'node:16'
@@ -25,6 +19,12 @@ steps:
             CHROMIUM_PATH=$${CHROMIUM_PATH#"/workspace"}
             echo "PUPPETEER_EXECUTABLE_PATH: $${CHROMIUM_PATH}" >> /workspace/env.yaml
             echo "GCF_RUNTIME: 'true'" >> /workspace/env.yaml
+    - name: 'node'
+      entrypoint: 'yarn'
+      args: ['install']
+    - name: 'node'
+      entrypoint: 'yarn'
+      args: ['build']
     # Deploying the function itself:
     # Region is to your liking but make sure your bucket is in the same one
     # trigger-resource must be a predefined topic that you publish messages from a cloud scheduler job to
