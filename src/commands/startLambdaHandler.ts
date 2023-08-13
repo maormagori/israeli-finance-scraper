@@ -1,8 +1,12 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import env from '../env';
 import TelegramBot from '../notifications/TelegramBot';
+import { SchedulerJobData } from '@google/events/cloud/scheduler/v1/SchedulerJobData';
+import { CloudEvent, cloudEvent } from '@google-cloud/functions-framework';
 
-export const lambdaHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+const eventHandler = async (
+    event: APIGatewayEvent | CloudEvent<SchedulerJobData>
+): Promise<APIGatewayProxyResult | void> => {
     if (!env.BOT_TOKEN) {
         throw new Error('BOT_TOKEN env var not set!');
     }
@@ -26,7 +30,6 @@ export const lambdaHandler = async (event: APIGatewayEvent): Promise<APIGatewayP
             },
             body: JSON.stringify({ success: true })
         };
-
     } catch (e) {
         return {
             statusCode: 500,
@@ -34,3 +37,6 @@ export const lambdaHandler = async (event: APIGatewayEvent): Promise<APIGatewayP
         };
     }
 };
+
+cloudEvent<SchedulerJobData>('schedulerHandler', eventHandler);
+export const lambdaHandler = eventHandler;

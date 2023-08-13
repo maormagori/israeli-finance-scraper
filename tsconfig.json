@@ -15,17 +15,11 @@
         "resolveJsonModule": true,
         "isolatedModules": false,
         "strictNullChecks": true,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
+        "lib": ["dom", "dom.iterable", "esnext"],
         "noImplicitReturns": true,
         "noUnusedLocals": false,
         "sourceMap": false,
-        "types": [
-            "node"
-        ]
+        "types": ["node"]
     },
     "compileOnSave": true,
     "include": ["src/**/*.ts"]

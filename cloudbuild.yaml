@@ -1,0 +1,55 @@
+steps:
+    # Setting env vars and the firebase-service-account.json file
+    - name: 'bash'
+      args:
+        - -c
+        - |
+            echo "$$GOOGLE_CREDENTIALS" > /workspace/firebase-service-account.json
+            echo "BOT_TOKEN: '$$BOT_TOKEN'" >> /workspace/env.yaml
+            echo "CHAT_ID: '$$CHAT_ID'" >> /workspace/env.yaml
+      secretEnv: ['GOOGLE_CREDENTIALS', 'BOT_TOKEN', 'CHAT_ID']
+    - name: 'node'
+      entrypoint: 'yarn'
+      args: ['install']
+    - name: 'node'
+      entrypoint: 'yarn'
+      args: ['build']
+    # Installing chromium. This assumes cloud-functions and the node container are the same.
+    # Should be more specific in the future.
+    - name: 'node:16'
+      entrypoint: 'bash'
+      args:
+        - -c
+        - |
+            CHROMIUM_PATH=$$(npx --yes @puppeteer/browsers install chromium --path /workspace | cut -d' ' -f2)
+            CHROMIUM_PATH=$${CHROMIUM_PATH#"/workspace"}
+            echo "PUPPETEER_EXECUTABLE_PATH: $${CHROMIUM_PATH}" >> /workspace/env.yaml
+            echo "GCF_RUNTIME: 'true'" >> /workspace/env.yaml
+    # Deploying the function itself:
+    # Region is to your liking but make sure your bucket is in the same one
+    # trigger-resource must be a predefined topic that you publish messages from a cloud scheduler job to
+    # The function seems to fail if given not enough memory so 2048M is on the safe side
+    - name: 'gcr.io/cloud-builders/gcloud'
+      args:
+        - functions
+        - deploy
+        - finance-scraper
+        - --gen2
+        - --region=europe-west1
+        - --source=.
+        - --trigger-event=google.cloud.pubsub.topic.v1.messagePublished
+        - --trigger-resource=scrape-finance
+        - --runtime=nodejs16
+        - --entry-point=schedulerHandler
+        - --allow-unauthenticated
+        - --memory=2048M
+        - --env-vars-file=/workspace/env.yaml
+availableSecrets:
+    secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/finance-scraper-bot-token/versions/latest
+      env: BOT_TOKEN
+    - versionName: projects/$PROJECT_ID/secrets/finance-scraper-chat-id/versions/latest
+      env: CHAT_ID
+    - versionName: projects/$PROJECT_ID/secrets/finance-scraper-google-credentials/versions/latest
+      env: GOOGLE_CREDENTIALS
+
